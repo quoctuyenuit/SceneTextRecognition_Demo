@@ -50,7 +50,6 @@ def upload():
         if 'file' not in request.files:
             flash('Không tìm thấy file')
             print('No file part')
-            return redirect('/')
 
         file = request.files['file']
         print('file: {}'.format(file))
@@ -59,7 +58,6 @@ def upload():
         if file.filename == '':
             flash('Không tìm thấy file')
             print('No filename')
-            return redirect('/')
 
         if file and allowed_file(file.filename):
             img_name = secure_filename(file.filename)
@@ -75,11 +73,6 @@ def upload():
             session['image'] = drew_path
 
             return redirect('/processing')
-        else:
-            flash('Allowed file types are png, jpg, jpeg')
-            return redirect('/')
-
-    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True)
