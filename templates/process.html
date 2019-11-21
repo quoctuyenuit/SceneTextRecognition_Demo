@@ -1,0 +1,64 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+     <!-- Required meta tags -->
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+     <link rel="stylesheet" href="/static/css/home.css">
+     <link rel="stylesheet" href="/static/css/button.css">
+     <script src="/static/js/home.js"></script>
+     <title>Scene Text Recognition Demo</title>
+</head>
+
+<style>
+     body {
+       background-image: url('/static/images/cover_bg_5.jpg');
+       height: 100vh;
+     }
+</style>
+
+<body>
+     <div class="container" id="process-container">
+          <div class="container-right">
+               <div class="main-menu">
+                   {%for block in blocks%}
+                    <div class="box"><p style="margin: 0px;">{{block}}</p></div>
+                    {%endfor%}
+               </div>
+          </div>
+
+          <div class="container-left">
+               <img id="img-process" src="{{img}}"  class="input-image"> 
+          </div>
+
+          <div class="button-container">
+               <form action="/reset" method="POST">
+                    <button class="button-reset" style="width: 150px; height: 45px;">Reset</button>
+               </form>
+
+               <!-- <div class="button-main" style="width: 150px; height: 45px;"> -->
+                    <!-- <p >New file</p> -->
+                    <form action="/upload-image" method="POST" enctype="multipart/form-data">
+                         <!-- <input type="file" size="60" /> -->
+                         <!-- <input type="file" class="custom-file-upload" name="file"  accept=".png, .jpg, .jpeg" onchange="this.form.submit()"/> -->
+                         <label for="file-upload" class="custom-file-upload">
+                              <i class="fa fa-cloud-upload"></i> Custom Upload
+                         </label>
+                         <input id="file-upload" type="file" accept=".png, .jpg, .jpeg" onchange="this.form.submit()"/>
+                    </form>
+               <!-- </div> -->
+          </div>
+     </div>
+
+     <!-- Optional JavaScript -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+          integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous">
+     </script>
+</body>
+</html>
+
