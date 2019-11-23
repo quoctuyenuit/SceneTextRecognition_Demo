@@ -1,40 +1,59 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-     <!-- Required meta tags -->
-     <meta charset="utf-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-     <!-- Bootstrap CSS -->
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-     <link rel="stylesheet" href="/static/css/home.css">
-     <script src="/static/js/home.js"></script>
-     <title>Scene Text Recognition Demo</title>
-</head>
+<div class="container py-5">
+    <header class="text-white text-center">
+        <h1 class="display-4">Demo nhận diện chữ trong hình ảnh</h1>
+        <p class="lead mb-0">Sinh viên thực hiện: 15520994 - Nguyễn Quốc Tuyến</p>
+        <p class="lead mb-0">Giảng viên hướng dẫn: TS. Huỳnh Ngọc Tín - ThS. Đỗ Văn Tiến</p>
+        <img src="https://res.cloudinary.com/mhmd/image/upload/v1564991372/image_pxlho1.svg" style="margin-top: 30px" alt="" width="150" class="mb-4">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        
+        <!-- Alert popup -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        
 
-<style>
-     body {
-       background-image: url('/static/images/cover_bg_5.jpg');
-       height: 100vh;
-     }
-</style>
+        <link rel="stylesheet" href="/static/css/home.css">
+        <link rel="stylesheet" href="/static/css/loader.css">
+        <script src="static/js/home.js"></script>
+    </header>
 
-<body>
-     <div class="container"  id="input-container">
-          <form action="/upload-image" method="POST" enctype="multipart/form-data">
-               <div class="dropzone center-all">
-                    <p class="dropzone-text">Upload image from your computer</p>
-                    <input type="file" name="file" class="input-file" accept=".png, .jpg, .jpeg" onchange="this.form.submit()"/>
-               </div>
-          </form>
-     </div>
+    <div class="row py-4">
+        <div class="col-lg-6 mx-auto">
+            <!-- Upload image input-->
+            <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
+                <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0" accept=".png, .jpg, .jpeg">
+                <label id="upload-label" for="upload" class="font-weight-light text-muted label-center">Chọn hình ảnh</label>
+                <div class="input-group-append">
+                    <label for="upload" class="btn btn-light m-0 rounded-pill px-4 label-center"> <i class="fa fa-cloud-upload mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Browser</small></label>
+                </div>
+            </div>
 
-     <!-- Optional JavaScript -->
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-          integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous">
-     </script>
-</body>
-</html>
+            <!-- Uploaded image area-->
+            <div id="review-container" class="col-lg-12 mx-auto">
+                <div id="loader" class="loader" style='display: none'></div>
+                <div class="image-area"><img id="imageResult" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block"></div>
+            </div>
 
+            <!-- Alert popup -->
+            <div id="error-alert" class="alert alert-danger alert-dismissible" style="margin-top: 30px; display: none;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <p id="error-content" style="margin: 0px;"><strong>Error!</strong> This alert box could indicate a dangerous or potentially negative action.</p>
+            </div>
+        </div>
+        
+        <!-- Recognized image results-->
+        <div class="container-main" id="process-container" style="display: none;">
+                <div class="container-right">
+                     <div class="main-menu" id="result">
+                     </div>
+                </div>
+      
+                <div class="container-left">
+                    <div class="image-area"><img id="image-processing" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block"></div>
+                </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+name: demo_service
+channels:
+  - conda-forge
+  - defaults
+prefix: /Users/tuyennq/anaconda3/envs/demo_service
+

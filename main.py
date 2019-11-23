@@ -27,19 +27,6 @@ def allowed_file(filename):
 def home():
     return render_template('home.html')
 
-@app.route("/processing")
-def processing():
-    blocks = session.get('response')
-    print('request process: {}'.format(blocks))
-    
-    img=session.get('image')
-
-    return render_template('process.html', blocks = blocks, img= img)
-
-@app.route("/reset", methods=['POST'])
-def reset():
-    return redirect('/')
-
 @app.route("/upload-image", methods=['POST'])
 def upload():
     print('uploading')
@@ -69,10 +56,9 @@ def upload():
             drew_path = os.path.join(app.config['DREW_FOLDER'], img_name)
             cv2.imwrite(drew_path, img)
            
-            session['response'] = blocks
-            session['image'] = drew_path
-
-            return redirect('/processing')
-
+            return {'status': 1, 'image': drew_path, 'blocks': blocks}
+    
+    return {'status': 0, 'image': drew_path, 'blocks': blocks}
+    
 if __name__ == "__main__":
     app.run(debug=True)
