@@ -41,15 +41,42 @@ def upload():
             img_name = secure_filename(file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
             file.save(img_path)
-            blocks, bboxes = utility.recognize(img_path)
+            strings, bboxes = utility.recognize(img_path)
+            
             img = utility.draw_box_on_image(bboxes, img_path)
+            _, buffer_img= cv2.imencode('.jpg', img)
+            data = base64.b64encode(buffer_img)
+            
+            session['bboxes'] = bboxes
+            session['strings'] = strings
+            session['img_path'] = img_path
 
-            drew_path = os.path.join(app.config['DREW_FOLDER'], img_name)
-            cv2.imwrite(drew_path, img)
-           
-            return {'status': 1, 'image': drew_path, 'blocks': blocks}
+            return {'status': 1, 'image': data.decode('utf-8'), 'strings': strings}
     
-    return {'status': 0, 'image': drew_path, 'blocks': blocks}
+    return {'status': 0, 'image': None, 'strings': None}
     
+@app.route("/mouse-hover", methods=["POST"])
+def mouse_hover():
+
+    content = request.form["content"]
+    isHighLight = request.form["isHighLight"]
+    print('isHighLight: {}'.format(isHighLight))
+
+    strings = session['strings']
+    bboxes = session['bboxes']
+    img_path = session['img_path']
+
+    index = strings.index(content)
+    # bboxes = list(map(lambda block: [block[0], app.config['COLOR']], bboxes))
+    color = app.config['HIGHLIGHT-COLOR'] if isHighLight == "true" else app.config['COLOR']
+    print('color: {}'.format(color))
+    bboxes[index][1] = color
+    
+    img = utility.draw_box_on_image(bboxes, img_path)
+    _, buffer_img= cv2.imencode('.jpg', img)
+    data = base64.b64encode(buffer_img)
+
+    return {'image': data.decode('utf-8')}
+
 if __name__ == "__main__":
     app.run(debug=True)

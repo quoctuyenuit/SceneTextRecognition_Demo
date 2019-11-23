@@ -10,13 +10,16 @@ class Utility:
     def __init__(self):
         pass
 
-    def draw_box_on_image(self, bboxes, image_path):
+    def draw_box_on_image(self, blocks, image_path):
         img = cv2.imread(image_path)
-        for bbox in bboxes:
-            cv2.line(img, (int(bbox[0][0]),int(bbox[0][1])), (int(bbox[1][0]),int(bbox[1][1])), (0,255,0),2)
-            cv2.line(img, (int(bbox[2][0]),int(bbox[2][1])), (int(bbox[1][0]),int(bbox[1][1])), (0,255,0),2)
-            cv2.line(img, (int(bbox[2][0]),int(bbox[2][1])), (int(bbox[3][0]),int(bbox[3][1])), (0,255,0),2)
-            cv2.line(img, (int(bbox[0][0]),int(bbox[0][1])), (int(bbox[3][0]),int(bbox[3][1])), (0,255,0),2)
+        for block in blocks:
+            bboxes = block[0]
+            color = block[1]
+            for bbox in bboxes:
+                cv2.line(img, (int(bbox[0][0]),int(bbox[0][1])), (int(bbox[1][0]),int(bbox[1][1])), color,2)
+                cv2.line(img, (int(bbox[2][0]),int(bbox[2][1])), (int(bbox[1][0]),int(bbox[1][1])), color,2)
+                cv2.line(img, (int(bbox[2][0]),int(bbox[2][1])), (int(bbox[3][0]),int(bbox[3][1])), color,2)
+                cv2.line(img, (int(bbox[0][0]),int(bbox[0][1])), (int(bbox[3][0]),int(bbox[3][1])), color,2)
         
         return img
 
@@ -34,7 +37,12 @@ class Utility:
         response = requests.post(app.config['API'], files={'file': (img_path, open(img_path, 'rb'), 'image/png', headers)})
         response_dict = json.loads(response.text)
 
-        blocks = response_dict['data']['blocks']
-        bboxes = response_dict['data']['bboxes']
+        data = response_dict['data']
 
-        return (blocks, bboxes)
+        strings = data['strings']
+        bboxes = data['bboxes']
+
+        bboxes = list(map(lambda bbox: [bbox, app.config['COLOR']], bboxes))
+        # Struct of bboxes: [block, color], block = [bboxes], bboxes = [4 points]
+
+        return (strings, bboxes)

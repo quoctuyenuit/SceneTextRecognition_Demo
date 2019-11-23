@@ -23,18 +23,27 @@ function requestRecognize(file) {
             } else {
                 // show detected image
                 $('#image-processing')
-                .attr('src', response['image']);
+                .attr('src', "data:image/jpeg;charset=utf-8;base64," + response['image']);
                 
                 // show recognized content
                 var result_div = document.getElementById('result');
-                response['blocks'].forEach(element => {
+                
+                while (result_div.firstChild) {
+                    result_div.removeChild(result_div.firstChild)
+                }
+
+                response['strings'].forEach(element => {
                     var para = document.createElement("p");
+                    para.style.margin = "0px"
                     var node = document.createTextNode(element);
                     para.appendChild(node);
                     
                     var iDiv = document.createElement('div');
                     iDiv.className = 'box';
                     iDiv.appendChild(para);
+                    iDiv.onmouseover = function() { mouse_hover(element, true); }
+                    iDiv.onmouseout = function() { mouse_hover(element, false); }
+
                     result_div.appendChild(iDiv);
                 });
 
@@ -43,7 +52,6 @@ function requestRecognize(file) {
             }
         },
         error : function(e) {
-                debugger
                 console.log("ERROR: ", e);
         }
     });
@@ -73,4 +81,26 @@ function readURL(input) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function mouse_hover(content, isHighLight) {
+    debugger
+    var fd = new FormData();
+    fd.append('content',content);
+    fd.append('isHighLight',isHighLight);
+    $.ajax({
+        url: '/mouse-hover',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function(response){
+            debugger
+            $('#image-processing')
+            .attr('src', "data:image/jpeg;charset=utf-8;base64," + response['image']);
+        },
+        error: function(e) {
+            console.log("ERROR: ", e);
+        }
+    });
 }
