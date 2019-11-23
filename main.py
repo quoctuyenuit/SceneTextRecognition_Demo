@@ -5,20 +5,11 @@ from werkzeug.utils import secure_filename
 from utility import Utility
 import cv2
 import base64
-
-app = Flask(__name__)
-UPLOAD_FOLDER = './static/images/uploads'
-DREW_FOLDER = './static/images/uploads/drew'
-
-app.secret_key = "secret key"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['DREW_FOLDER'] = DREW_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-app.config['IMAGE']=''
+from config import app
 
 utility = Utility()
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
