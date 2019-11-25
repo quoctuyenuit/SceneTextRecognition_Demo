@@ -55,9 +55,32 @@ def upload():
     
     return {'status': 0, 'image': None, 'strings': None}
     
+@app.route("/upload-url", methods=['POST'])
+def upload_url():
+    print("upload url request")
+    url = request.form["url"]
+    print("url: {}".format(url))
+    if url:
+        img_path = utility.getFile(url)
+        if img_path is None:
+            return {'status': 0, 'image': None, 'strings': None}
+            
+        strings, bboxes = utility.recognize(img_path)
+
+        img = utility.draw_box_on_image(bboxes, img_path)
+        _, buffer_img= cv2.imencode('.jpg', img)
+        data = base64.b64encode(buffer_img)
+
+        session['bboxes'] = bboxes
+        session['strings'] = strings
+        session['img_path'] = img_path
+
+        return {'status': 1, 'image': data.decode('utf-8'), 'strings': strings}
+    
+    return {'status': 0, 'image': None, 'strings': None}
+
 @app.route("/mouse-hover", methods=["POST"])
 def mouse_hover():
-
     content = request.form["content"]
     isHighLight = request.form["isHighLight"]
     print('isHighLight: {}'.format(isHighLight))

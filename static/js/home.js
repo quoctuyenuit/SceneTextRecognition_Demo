@@ -1,25 +1,25 @@
-function requestRecognize(file) {
-    var fd = new FormData();
-    fd.append('file',file);
+function requestRecognize(data, url) {
+    var header = document.getElementById('header-container')
+
+    while (header.lastChild.name == "alert") {
+        header.removeChild(header.lastChild);
+    }
     $.ajax({
-        url: '/upload-image',
+        url: url,
         type: 'post',
-        data: fd,
+        data: data,
         contentType: false,
         processData: false,
         success: function(response){
             debugger
-
             if (response['status'] == 0) {
                 $('#imageResult')
                 .attr('src', "#");
                 var loader = document.getElementById('loader')
                 loader.style.display = "none"
-
-                var alert = document.getElementById('error-alert')
-                alert.style.display = 'block'
-                var alert_content = document.getElementById('error-content')
-                alert_content.textContent = '[Lỗi] Tập tin không thể xử lý, vui lòng chọn tập tin khác!'
+                
+                var alert = createAlertPopup('[Lỗi] Tập tin không thể xử lý, vui lòng chọn tập tin khác!')
+                header.appendChild(alert)
             } else {
                 // show detected image
                 $('#image-processing')
@@ -41,8 +41,14 @@ function requestRecognize(file) {
                     var iDiv = document.createElement('div');
                     iDiv.className = 'box';
                     iDiv.appendChild(para);
-                    iDiv.onmouseover = function() { mouse_hover(element, true); }
-                    iDiv.onmouseout = function() { mouse_hover(element, false); }
+                    iDiv.onmouseover = function() { 
+                        iDiv.style.background = "#7d8ba1"
+                        mouse_hover(element, true); 
+                    }
+                    iDiv.onmouseout = function() { 
+                        iDiv.style.background = "#F2F2F2"
+                        mouse_hover(element, false); 
+                    }
 
                     result_div.appendChild(iDiv);
                 });
@@ -55,6 +61,28 @@ function requestRecognize(file) {
                 console.log("ERROR: ", e);
         }
     });
+}
+
+function createAlertPopup(content) {
+    var alert = document.createElement('div');
+    alert.name = "alert"
+    alert.className = "alert alert-danger alert-dismissible";
+    alert.style = "margin-top: 30px;";
+    var closeBtn = document.createElement('a');
+    closeBtn.className = "close";
+    closeBtn.style = "cursor: pointer;";
+    closeBtn.setAttribute('data-dismiss', 'alert');
+    closeBtn.setAttribute('aria-label', 'close');
+    closeBtn.innerHTML = "&times;";
+
+    var contentBox = document.createElement('p');
+    contentBox.style = "margin: 0px";
+    contentBox.textContent = content;
+
+    alert.appendChild(contentBox);
+    alert.appendChild(closeBtn);
+
+    return alert;
 }
 
 function readURL(input) {
@@ -76,8 +104,9 @@ function readURL(input) {
             
             var loader = document.getElementById('loader')
             loader.style.display = "block"
-
-            requestRecognize(input.files[0]);
+            var fd = new FormData();
+            fd.append('file',input.files[0]);
+            requestRecognize(fd, '/upload-image');
         };
         reader.readAsDataURL(input.files[0]);
     }
@@ -103,4 +132,19 @@ function mouse_hover(content, isHighLight) {
             console.log("ERROR: ", e);
         }
     });
+}
+
+function submit_url(url) {
+    document.getElementById("process-container").style.display = "none";
+    document.getElementById("review-container").style.display = "block";
+    
+    $('#imageResult')
+        .attr('src', url);
+    
+    var loader = document.getElementById('loader')
+    loader.style.display = "block"
+    var fd = new FormData();
+    fd.append('url', url);
+    
+    requestRecognize(fd, '/upload-url');
 }

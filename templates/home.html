@@ -14,14 +14,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
         
-
         <link rel="stylesheet" href="/static/css/home.css">
         <link rel="stylesheet" href="/static/css/loader.css">
         <script src="static/js/home.js"></script>
     </header>
 
     <div class="row py-4">
-        <div class="col-lg-6 mx-auto">
+        <div class="col-lg-6 mx-auto" id="header-container">
             <!-- Upload image input-->
             <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
                 <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0" accept=".png, .jpg, .jpeg">
@@ -30,19 +29,21 @@
                     <label for="upload" class="btn btn-light m-0 rounded-pill px-4 label-center"> <i class="fa fa-cloud-upload mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Browser</small></label>
                 </div>
             </div>
+            <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
+                <label class="font-weight-light text-muted label-center" style="margin: auto; margin-left: 10px;">URL:</label>
+                <input id="url" name="url" type="text" class="form-control border-0">
+                <div class="input-group-append" onclick="submit_url($('#url')[0].value)">
+                    <label class="btn btn-light m-0 rounded-pill px-4 label-center"><small class="text-uppercase font-weight-bold text-muted">Submit</small></label>
+                </div>
+            </div>
 
             <!-- Uploaded image area-->
             <div id="review-container" class="col-lg-12 mx-auto">
                 <div id="loader" class="loader" style='display: none'></div>
                 <div class="image-area"><img id="imageResult" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block"></div>
             </div>
-
-            <!-- Alert popup -->
-            <div id="error-alert" class="alert alert-danger alert-dismissible" style="margin-top: 30px; display: none;">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <p id="error-content" style="margin: 0px;"><strong>Error!</strong> This alert box could indicate a dangerous or potentially negative action.</p>
-            </div>
         </div>
+
         
         <!-- Recognized image results-->
         <div class="container-main" id="process-container" style="display: none;">
