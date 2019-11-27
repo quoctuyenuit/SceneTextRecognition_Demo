@@ -85,9 +85,18 @@ class Utility:
         data = response_dict['data']
 
         strings = data['strings']
-        bboxes = data['bboxes']
+        blocks = data['bboxes']
 
-        bboxes = list(map(lambda bbox: [bbox, app.config['COLOR']], bboxes))
+        blocks = list(map(lambda bboxes: list(map(lambda bbox: self.__refactor_bbox(bbox, app.config['COLOR']), bboxes)), blocks))
         # Struct of bboxes: [block, color], block = [bboxes], bboxes = [4 points]
 
-        return (strings, bboxes)
+        return (strings, blocks)
+
+    def __refactor_bbox(self, bbox, defaultColor):
+        p1 = np.array(bbox[0])
+        p2 = np.array(bbox[1])
+        p4 = np.array(bbox[3])
+        width = np.linalg.norm(p1 - p2)
+        height = np.linalg.norm(p1 - p4)
+        # Return (x, y, width, height)
+        return [bbox[0][0], bbox[0][1], width, height, defaultColor]

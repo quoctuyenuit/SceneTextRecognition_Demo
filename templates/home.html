@@ -23,7 +23,7 @@
         <div class="col-lg-6 mx-auto" id="header-container">
             <!-- Upload image input-->
             <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-                <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0" accept=".png, .jpg, .jpeg">
+                <input id="upload" type="file" onchange="uploadFile(this);" class="form-control border-0" accept=".png, .jpg, .jpeg">
                 <label id="upload-label" for="upload" class="font-weight-light text-muted label-center">Chọn hình ảnh</label>
                 <div class="input-group-append">
                     <label for="upload" class="btn btn-light m-0 rounded-pill px-4 label-center"> <i class="fa fa-cloud-upload mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Browser</small></label>
@@ -47,14 +47,18 @@
         
         <!-- Recognized image results-->
         <div class="container-main" id="process-container" style="display: none;">
-                <div class="container-right">
-                     <div class="main-menu" id="result">
-                     </div>
+            <div class="container-left">
+                <div  id="image-area" class="image-area">
+                    <canvas id="canvas" class="img-fluid rounded shadow-sm mx-auto d-block"> </canvas>
+                    <!-- <img id="image-processing" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block"> -->
                 </div>
-      
-                <div class="container-left">
-                    <div class="image-area"><img id="image-processing" src="#" alt="" class="img-fluid rounded shadow-sm mx-auto d-block"></div>
-                </div>
+            </div>
+
+
+            <div class="container-right">
+                    <div class="main-menu" id="result">
+                    </div>
+            </div>
         </div>
     </div>
 </div>
