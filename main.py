@@ -42,11 +42,7 @@ def upload():
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
             file.save(img_path)
             strings, bboxes = utility.recognize(img_path)
-            
-            # img = utility.draw_box_on_image(bboxes, img_path)
-            # _, buffer_img= cv2.imencode('.jpg', img)
-            # data = base64.b64encode(buffer_img)
-            
+            print('recognized')            
             session['blocks'] = bboxes
             session['strings'] = strings
 

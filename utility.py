@@ -93,10 +93,5 @@ class Utility:
         return (strings, blocks)
 
     def __refactor_bbox(self, bbox, defaultColor):
-        p1 = np.array(bbox[0])
-        p2 = np.array(bbox[1])
-        p4 = np.array(bbox[3])
-        width = np.linalg.norm(p1 - p2)
-        height = np.linalg.norm(p1 - p4)
-        # Return (x, y, width, height)
-        return [bbox[0][0], bbox[0][1], width, height, defaultColor]
+        bbox.append(defaultColor)
+        return bbox

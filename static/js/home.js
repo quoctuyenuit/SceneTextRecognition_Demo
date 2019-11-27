@@ -11,7 +11,6 @@ function requestRecognize(data, url) {
         contentType: false,
         processData: false,
         success: function(response){
-            debugger
             if (response['status'] == 0) {
                 $('#imageResult')
                 .attr('src', "#");
@@ -21,20 +20,21 @@ function requestRecognize(data, url) {
                 var alert = createAlertPopup('[Lỗi] Tập tin không thể xử lý, vui lòng chọn tập tin khác!')
                 header.appendChild(alert)
             } else {
-                // show detected image
-                $('#image-processing')
-                .attr('src', "data:image/jpeg;charset=utf-8;base64," + response['image']);
+                var blocks = response['blocks'];
+                var strings = response['strings'];
                 
+                blocks = refreshBlocks(blocks);
+                drawBBoxes(blocks);
+
                 // show recognized content
                 var result_div = document.getElementById('result');
-                
                 while (result_div.firstChild) {
                     result_div.removeChild(result_div.firstChild)
                 }
 
-                response['strings'].forEach(element => {
+                strings.forEach(element => {
                     var para = document.createElement("p");
-                    para.style.margin = "0px"
+                    para.style.margin = "0px";
                     var node = document.createTextNode(element);
                     para.appendChild(node);
                     
@@ -43,11 +43,15 @@ function requestRecognize(data, url) {
                     iDiv.appendChild(para);
                     iDiv.onmouseover = function() { 
                         iDiv.style.background = "#7d8ba1"
-                        mouse_hover(element, true); 
+                        var index = strings.findIndex(x => { return x == element; });
+                        blocks = highLighBlock(blocks, index);
+                        drawBBoxes(blocks);
                     }
+
                     iDiv.onmouseout = function() { 
                         iDiv.style.background = "#F2F2F2"
-                        mouse_hover(element, false); 
+                        blocks = refreshBlocks(blocks)
+                        drawBBoxes(blocks)
                     }
 
                     result_div.appendChild(iDiv);
@@ -55,10 +59,11 @@ function requestRecognize(data, url) {
 
                 document.getElementById("process-container").style.display = "block";
                 document.getElementById("review-container").style.display = "none";
+                window.scrollTo(0,document.body.scrollHeight);
             }
         },
         error : function(e) {
-                console.log("ERROR: ", e);
+            console.log("ERROR: ", e);
         }
     });
 }
@@ -85,20 +90,18 @@ function createAlertPopup(content) {
     return alert;
 }
 
-function readURL(input) {
-	debugger
+function uploadFile(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
 
-	debugger
 	reader.onload = function (e) {
-            debugger
             document.getElementById("process-container").style.display = "none";
             document.getElementById("review-container").style.display = "block";
             
             $('#imageResult')
                 .attr('src', e.target.result);
 
+            drawImage(e.target.result);
             var label = document.getElementById('upload-label')
             label.textContent = 'Tập tin: ' + input.files[0].name;
             
@@ -112,28 +115,6 @@ function readURL(input) {
     }
 }
 
-function mouse_hover(content, isHighLight) {
-    debugger
-    var fd = new FormData();
-    fd.append('content',content);
-    fd.append('isHighLight',isHighLight);
-    $.ajax({
-        url: '/mouse-hover',
-        type: 'post',
-        data: fd,
-        contentType: false,
-        processData: false,
-        success: function(response){
-            debugger
-            $('#image-processing')
-            .attr('src', "data:image/jpeg;charset=utf-8;base64," + response['image']);
-        },
-        error: function(e) {
-            console.log("ERROR: ", e);
-        }
-    });
-}
-
 function submit_url(url) {
     document.getElementById("process-container").style.display = "none";
     document.getElementById("review-container").style.display = "block";
@@ -141,10 +122,71 @@ function submit_url(url) {
     $('#imageResult')
         .attr('src', url);
     
+    drawImage(url);
     var loader = document.getElementById('loader')
     loader.style.display = "block"
     var fd = new FormData();
     fd.append('url', url);
     
     requestRecognize(fd, '/upload-url');
+}
+// ====================================================
+// ====================================================
+var defaultcolor = "#00f54e"
+var highlightColor = "#fc0303"
+
+function drawImage(src) {
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var imageObj = new Image();
+
+    imageObj.onload = function() {
+    canvas.width = this.width;
+    canvas.height = this.height;
+    context.drawImage(imageObj, 0, 0, this.width,this.height);
+    };
+    imageObj.src = src
+}
+
+function drawBBoxes(blocks) {
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    
+    blocks.forEach(bboxes => {
+        bboxes.forEach(bbox => {
+            context.lineWidth = 2
+            debugger
+            context.strokeStyle = bbox[4];
+            drawLine(context, bbox[0], bbox[1]);
+            drawLine(context, bbox[1], bbox[2]);
+            drawLine(context, bbox[2], bbox[3]);
+            drawLine(context, bbox[3], bbox[0]);
+            // context.strokeRect(bbox[0], bbox[1], bbox[2], bbox[3]);
+        });
+    });
+}
+
+function drawLine(ctx, startPoint, endPoint) {
+    ctx.beginPath();
+    ctx.moveTo(startPoint[0], startPoint[1]);
+    ctx.lineTo(endPoint[0], endPoint[1]);
+    ctx.stroke();
+}
+
+function refreshBlocks(blocks) {
+    blocks.forEach(bboxes => {
+        bboxes.forEach(bbox => {
+            bbox[4] = defaultcolor;
+        });
+    });
+    return blocks
+}
+
+function highLighBlock(blocks, index) {
+    blocks = refreshBlocks(blocks);
+    
+    blocks[index].forEach(bbox => {
+        bbox[4] = highlightColor;
+    });
+    return blocks
 }
