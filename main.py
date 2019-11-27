@@ -52,9 +52,7 @@ def upload():
     
 @app.route("/upload-url", methods=['POST'])
 def upload_url():
-    print("upload url request")
     url = request.form["url"]
-    print("url: {}".format(url))
     if url:
         img_path = utility.getFile(url)
         if img_path is None:
@@ -70,4 +68,6 @@ def upload_url():
     return {'status': 0, 'blocks': None, 'strings': None}
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    from waitress import serve
+    serve(app, host="ocr.mmlab.uit.edu.vn", port=8080)
+#    app.run(host='ocr.mmlab.uit.edu.vn', port='80')
