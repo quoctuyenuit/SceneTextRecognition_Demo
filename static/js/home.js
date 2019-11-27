@@ -12,7 +12,7 @@ function requestRecognize(data, url) {
         processData: false,
         success: function(response){
             if (response['status'] == 0) {
-                $('#imageResult')
+                $('#imageReview')
                 .attr('src', "#");
                 var loader = document.getElementById('loader')
                 loader.style.display = "none"
@@ -98,7 +98,9 @@ function uploadFile(input) {
             document.getElementById("process-container").style.display = "none";
             document.getElementById("review-container").style.display = "block";
             
-            $('#imageResult')
+            var text_review = document.getElementById('review-text')
+            text_review.style.display = 'none'
+            $('#imageReview')
                 .attr('src', e.target.result);
 
             drawImage(e.target.result);
@@ -118,8 +120,10 @@ function uploadFile(input) {
 function submit_url(url) {
     document.getElementById("process-container").style.display = "none";
     document.getElementById("review-container").style.display = "block";
+    var text_review = document.getElementById('review-text')
+    text_review.style.display = 'none'
     
-    $('#imageResult')
+    $('#imageReview')
         .attr('src', url);
     
     drawImage(url);
