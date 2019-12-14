@@ -1,0 +1,42 @@
+.hexagon-in2 {
+  overflow: hidden;
+  width: 150px;
+  height: 120px;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-color: #65a8dd;
+  border-width: 2px;
+  border-style: double;
+  border-color: rgba(255, 255, 255, 0);
+
+  -webkit-background-size: 100%;
+  -moz-background-size: 100%;
+  background-size: 100%;
+  visibility: visible;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -ms-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+.content .hexagon_container {  display: inline-block;  margin-left: 5px; }
+
+.team .hexagon-in2:hover { 
+  webkit-box-shadow: inset 0 0 0 200px rgba(161,192,67, 1); 
+  box-shadow: inset 0 0 0 200px rgba(89, 97, 104, 0.57);     
+  border-width: 2px;
+  border-style: double;
+  border-color: rgb(0, 255, 0);
+}
+
+.horizontal-scroll {
+  overflow-x: auto;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.horizontal-scroll > div{
+  widows: 100px;
+  height: 100px;
+}

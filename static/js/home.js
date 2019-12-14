@@ -4,6 +4,7 @@ function requestRecognize(data, url) {
     while (header.lastChild.name == "alert") {
         header.removeChild(header.lastChild);
     }
+    debugger
     $.ajax({
         url: url,
         type: 'post',
@@ -89,12 +90,13 @@ function createAlertPopup(content) {
 
     return alert;
 }
-
+// ====================================================
+// ====================================================
 function uploadFile(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
 
-	reader.onload = function (e) {
+	    reader.onload = function (e) {
             document.getElementById("process-container").style.display = "none";
             document.getElementById("review-container").style.display = "block";
             
@@ -133,6 +135,24 @@ function submit_url(url) {
     fd.append('url', url);
     
     requestRecognize(fd, '/upload-url');
+}
+
+function submit_default_img(img_path) {
+    document.getElementById("process-container").style.display = "none";
+    document.getElementById("review-container").style.display = "block";
+    var text_review = document.getElementById('review-text')
+    text_review.style.display = 'none'
+    
+    $('#imageReview')
+        .attr('src', img_path);
+    
+    drawImage(img_path);
+    var loader = document.getElementById('loader')
+    loader.style.display = "block"
+    var fd = new FormData();
+    fd.append('img_path', img_path);
+    
+    requestRecognize(fd, '/upload-default-img');
 }
 // ====================================================
 // ====================================================

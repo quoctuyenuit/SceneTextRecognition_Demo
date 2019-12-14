@@ -67,7 +67,20 @@ def upload_url():
     
     return {'status': 0, 'blocks': None, 'strings': None}
 
+@app.route("/upload-default-img", methods=['POST'])
+def upload_default_img():
+    img_path = request.form["img_path"]
+    if img_path:
+        strings, bboxes = utility.recognize(img_path)
+
+        session['blocks'] = bboxes
+        session['strings'] = strings
+
+        return {'status': 1, 'blocks': bboxes, 'strings': strings}
+    
+    return {'status': 0, 'blocks': None, 'strings': None}
+    
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="ocr.mmlab.uit.edu.vn", port=8080)
-#    app.run(host='ocr.mmlab.uit.edu.vn', port='80')
+    # serve(app, host="0.0.0.0", port=8080)
+    app.run(host='0.0.0.0', port='8080')
