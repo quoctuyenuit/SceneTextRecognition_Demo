@@ -4,7 +4,6 @@ from flask import Flask, render_template, jsonify, request, flash, redirect, ses
 from werkzeug.utils import secure_filename
 from utility import Utility
 import cv2
-import base64
 from config import app
 
 utility = Utility()
