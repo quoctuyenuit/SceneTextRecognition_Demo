@@ -68,7 +68,7 @@ class Utility:
             return None
 
 
-    def recognize(self, img_path):
+    def recognize(self, img_path, method=0):
         headers = {
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate',
@@ -79,7 +79,11 @@ class Utility:
             'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
         }
 
-        response = requests.post(app.config['API'], files={'file': (img_path, open(img_path, 'rb'), 'image/png', headers)})
+        files = {
+            'file': (img_path, open(img_path, 'rb'), 'image/png', headers)
+        }
+
+        response = requests.post(app.config['API'], files = files, data = {'detection_method': method})
         response_dict = json.loads(response.text)
 
         data = response_dict['data']
