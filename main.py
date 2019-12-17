@@ -29,6 +29,10 @@ def upload():
             print('No file part')
 
         file = request.files['file']
+        method = request.form['method']
+        method = method if method else 0
+
+        print('method: {}'.format(method))
         print('file: {}'.format(file))
         print('filename: {}'.format(file.filename))
 
@@ -40,7 +44,7 @@ def upload():
             img_name = secure_filename(file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
             file.save(img_path)
-            strings, bboxes = utility.recognize(img_path)
+            strings, bboxes = utility.recognize(img_path, method)
             print('recognized')            
             session['blocks'] = bboxes
             session['strings'] = strings
@@ -52,12 +56,15 @@ def upload():
 @app.route("/upload-url", methods=['POST'])
 def upload_url():
     url = request.form["url"]
+    method = request.form['method']
+    method = method if method else 0
+
     if url:
         img_path = utility.getFile(url)
         if img_path is None:
             return {'status': 0, 'image': None, 'strings': None}
             
-        strings, bboxes = utility.recognize(img_path)
+        strings, bboxes = utility.recognize(img_path, method)
 
         session['blocks'] = bboxes
         session['strings'] = strings
@@ -69,8 +76,13 @@ def upload_url():
 @app.route("/upload-default-img", methods=['POST'])
 def upload_default_img():
     img_path = request.form["img_path"]
+    print(request.form)
+
+    method = request.form['method']
+    method = method if method else 0
+    print('method: {}'.format(method))
     if img_path:
-        strings, bboxes = utility.recognize(img_path)
+        strings, bboxes = utility.recognize(img_path, method)
 
         session['blocks'] = bboxes
         session['strings'] = strings
