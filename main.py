@@ -44,12 +44,13 @@ def upload():
             img_name = secure_filename(file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
             file.save(img_path)
-            strings, bboxes = utility.recognize(img_path, method)
-            print('recognized')            
-            session['blocks'] = bboxes
-            session['strings'] = strings
+            status, strings, bboxes = utility.recognize(img_path, method)
+            if status == True:
+                print('recognized')            
+                session['blocks'] = bboxes
+                session['strings'] = strings
 
-            return {'status': 1, 'blocks': bboxes, 'strings': strings}
+                return {'status': 1, 'blocks': bboxes, 'strings': strings}
     
     return {'status': 0, 'blocks': None, 'strings': None}
     
@@ -64,12 +65,12 @@ def upload_url():
         if img_path is None:
             return {'status': 0, 'image': None, 'strings': None}
             
-        strings, bboxes = utility.recognize(img_path, method)
-
-        session['blocks'] = bboxes
-        session['strings'] = strings
-
-        return {'status': 1, 'blocks': bboxes, 'strings': strings}
+        status, strings, bboxes = utility.recognize(img_path, method)
+        if status == True:
+            session['blocks'] = bboxes
+            session['strings'] = strings
+ 
+            return {'status': 1, 'blocks': bboxes, 'strings': strings}
     
     return {'status': 0, 'blocks': None, 'strings': None}
 
@@ -82,12 +83,12 @@ def upload_default_img():
     method = method if method else 0
     print('method: {}'.format(method))
     if img_path:
-        strings, bboxes = utility.recognize(img_path, method)
+        status, strings, bboxes = utility.recognize(img_path, method)
+        if status == True:
+            session['blocks'] = bboxes
+            session['strings'] = strings
 
-        session['blocks'] = bboxes
-        session['strings'] = strings
-
-        return {'status': 1, 'blocks': bboxes, 'strings': strings}
+            return {'status': 1, 'blocks': bboxes, 'strings': strings}
     
     return {'status': 0, 'blocks': None, 'strings': None}
     

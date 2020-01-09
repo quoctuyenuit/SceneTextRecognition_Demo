@@ -83,18 +83,26 @@ class Utility:
             'file': (img_path, open(img_path, 'rb'), 'image/png', headers)
         }
 
-        response = requests.post(app.config['API'], files = files, data = {'detection_method': method})
-        response_dict = json.loads(response.text)
+        try:
+            response = requests.post(app.config['API'], files = files, data = {'detection_method': method})
+            response_dict = json.loads(response.text)
 
-        data = response_dict['data']
+            data = response_dict['data']
+            print('response: {}'.format(response_dict))
+            strings = data['strings']
+            blocks = data['bboxes']
 
-        strings = data['strings']
-        blocks = data['bboxes']
+            blocks = list(map(lambda bboxes: list(map(lambda bbox: self.__refactor_bbox(bbox, app.config['COLOR']), bboxes)), blocks))
+            # Struct of bboxes: [block, color], block = [bboxes], bboxes = [4 points]
+            status = True
+        except Exception as e:
+            status = False
+            print('Exception ne`: {}'.format(e))
+            strings = None
+            blocks = None
+            pass
 
-        blocks = list(map(lambda bboxes: list(map(lambda bbox: self.__refactor_bbox(bbox, app.config['COLOR']), bboxes)), blocks))
-        # Struct of bboxes: [block, color], block = [bboxes], bboxes = [4 points]
-
-        return (strings, blocks)
+        return (status, strings, blocks)
 
     def __refactor_bbox(self, bbox, defaultColor):
         bbox.append(defaultColor)
