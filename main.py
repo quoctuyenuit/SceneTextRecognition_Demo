@@ -51,7 +51,9 @@ def upload():
                 session['strings'] = strings
 
                 return {'status': 1, 'blocks': bboxes, 'strings': strings}
-    
+            else:
+                return {'status': 2, 'blocks': None, 'strings': None}
+                
     return {'status': 0, 'blocks': None, 'strings': None}
     
 @app.route("/upload-url", methods=['POST'])
@@ -69,8 +71,9 @@ def upload_url():
         if status == True:
             session['blocks'] = bboxes
             session['strings'] = strings
- 
             return {'status': 1, 'blocks': bboxes, 'strings': strings}
+        else:
+            return {'status': 2, 'blocks': None, 'strings': None}
     
     return {'status': 0, 'blocks': None, 'strings': None}
 
@@ -89,6 +92,8 @@ def upload_default_img():
             session['strings'] = strings
 
             return {'status': 1, 'blocks': bboxes, 'strings': strings}
+        else:
+            return {'status': 2, 'blocks': None, 'strings': None}
     
     return {'status': 0, 'blocks': None, 'strings': None}
     

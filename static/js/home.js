@@ -107,13 +107,17 @@ function requestRecognize(data, url) {
         contentType: false,
         processData: false,
         success: function(response){
-            if (response['status'] == 0) {
+            if (response['status'] != 1) {
                 $('#imageReview')
                 .attr('src', "#");
                 var loader = document.getElementById('loader')
                 loader.style.display = "none"
+                msg = "[Lỗi] Tập tin không thể xử lý, vui lòng chọn tập tin khác!"
+                if (response['status'] == 2) {
+                    msg = "[Lỗi] Không nhận được phản hồi từ server, vui lòng kiểm tra lại!"
+                }
                 
-                var alert = createAlertPopup('[Lỗi] Tập tin không thể xử lý, vui lòng chọn tập tin khác!')
+                var alert = createAlertPopup(msg)
                 header.appendChild(alert)
             } else {
                 var blocks = response['blocks'];
@@ -156,7 +160,10 @@ function requestRecognize(data, url) {
                 document.getElementById("process-container").style.display = "block";
                 document.getElementById("review-container").style.display = "none";
                 window.scrollTo(0,document.body.scrollHeight);
-            }
+            } 
+
+            
+            
         },
         error : function(e) {
             console.log("ERROR: ", e);
